@@ -17,19 +17,20 @@ Creating the cluster in the us-east1 region.
 Using the Docker container hello-app (`gcr.io/google-samples/hello-app:2.0`) as a place holder.
 Exposing the app on port 8080.
 
-#### Open the Cloud Shell and wait for it to be configured. Then run the following set of commands to create a kubernetes cluster.
+#### Open the Cloud Shell and wait for it to be configured. Then run the following set of commands to create a kubernetes cluster:
 
-gcloud config set compute/zone us-east1-b
 
-gcloud container clusters create nucleus-jumphost-webserver1
+     gcloud config set compute/zone us-east1-b
 
-gcloud container clusters get-credentials nucleus-jumphost-webserver1
+     gcloud container clusters create nucleus-jumphost-webserver1
 
-kubectl create deployment hello-app --image=gcr.io/google-samples/hello-app:2.0
+     gcloud container clusters get-credentials nucleus-jumphost-webserver1
 
-kubectl expose deployment hello-app --type=LoadBalancer --port 8080
+     kubectl create deployment hello-app --image=gcr.io/google-samples/hello-app:2.0
 
-kubectl get service
+     kubectl expose deployment hello-app --type=LoadBalancer --port 8080
+
+     kubectl get service
 
 
 ### Detailed Tutorial of Task — 3
@@ -46,8 +47,8 @@ EOF
 #### Press enter after this. After that, follow the below steps:
 
 #### 1- Creating an instance template:
-gcloud compute instance-templates create nginx-template \
---metadata-from-file startup-script=startup.sh
+    gcloud compute instance-templates create nginx-template \
+    --metadata-from-file startup-script=startup.sh
 
 #### 2-Creating a target pool:
 gcloud compute target-pools create nginx-pool
