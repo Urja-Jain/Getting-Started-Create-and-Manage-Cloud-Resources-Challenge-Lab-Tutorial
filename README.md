@@ -112,7 +112,10 @@ gcloud compute forwarding-rules list
 
 #### After this gcloud compute forwarding-rules list and then open the ip addresses listed in the output of the above command 
 #### in browser. There will be three values in the list. Ignore the first one. Open the ip adreesses of the rest two in your browser 
-For example : http://<IP_Address>:8080   ----> for second one
+For example : 
+
+              http://<IP_Address>:8080   ----> for second one
+
               http://<IP_ADDRESS>        -----> for the third one
 
 
