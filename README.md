@@ -37,13 +37,13 @@ Exposing the app on port 8080.
 Step 3 requires to setup an HTTP Load Balancer with a managed instance group of two nginx web servers. We need to do a set of 8 small tasks in order to score full in this task. 
 ##### The following set of configurations is given in advance:
 
-cat << EOF > startup.sh
-#! /bin/bash
-apt-get update
-apt-get install -y nginx
-service nginx start
-sed -i -- 's/nginx/Google Cloud Platform - '"\$HOSTNAME"'/' /var/www/html/index.nginx-debian.html
-EOF
+     cat << EOF > startup.sh
+     #! /bin/bash
+     apt-get update
+     apt-get install -y nginx
+     service nginx start
+     sed -i -- 's/nginx/Google Cloud Platform - '"\$HOSTNAME"'/' /var/www/html/index.nginx-debian.html
+     EOF
 #### Press enter after this. After that, follow the below steps:
 
 #### 1- Creating an instance template:
@@ -51,64 +51,64 @@ EOF
     --metadata-from-file startup-script=startup.sh
 
 #### 2-Creating a target pool:
-gcloud compute target-pools create nginx-pool
+     gcloud compute target-pools create nginx-pool
 
 #### This command will ask you the location where you want to create the target pool. If it’s not us-east1, type “n”.
 #### Select the number corresponding to us-east1 in the list.
 
 #### 3-  Creating a managed instance group:
-gcloud compute instance-groups managed create nginx-group \
---base-instance-name nginx \
---size 2 \
---template nginx-template \
---target-pool nginx-pool
+     gcloud compute instance-groups managed create nginx-group \
+     --base-instance-name nginx \
+     --size 2 \
+     --template nginx-template \
+     --target-pool nginx-pool
 
-gcloud compute instances list
+     gcloud compute instances list
 
 #### 4-Creating a firewall rule to allow traffic (80/tcp):
 
-gcloud compute firewall-rules create www-firewall --allow tcp:80
+     gcloud compute firewall-rules create www-firewall --allow tcp:80
 
-gcloud compute forwarding-rules create nginx-lb \
---region us-east1 \
---ports=80 \
---target-pool nginx-pool
+     gcloud compute forwarding-rules create nginx-lb \
+     --region us-east1 \
+     --ports=80 \
+     --target-pool nginx-pool
 
-gcloud compute forwarding-rules list
+     gcloud compute forwarding-rules list
 
 #### 5-Creating a health check:
-gcloud compute http-health-checks create http-basic-check
+     gcloud compute http-health-checks create http-basic-check
 
-gcloud compute instance-groups managed \
-set-named-ports nginx-group \
---named-ports http:80
+     gcloud compute instance-groups managed \
+     set-named-ports nginx-group \
+     --named-ports http:80
 
 #### 6- Creating a backend service and attach the manged instance group:
 
-gcloud compute backend-services create nginx-backend \
---protocol HTTP --http-health-checks http-basic-check --global
+     gcloud compute backend-services create nginx-backend \
+     --protocol HTTP --http-health-checks http-basic-check --global
 
-gcloud compute backend-services add-backend nginx-backend \
---instance-group nginx-group \
---instance-group-zone us-east1-b \
---global
+     gcloud compute backend-services add-backend nginx-backend \
+     --instance-group nginx-group \
+     --instance-group-zone us-east1-b \
+     --global
 
 #### 7- Creating a URL map and target HTTP proxy to route requests to your URL map:
 
-gcloud compute url-maps create web-map \
---default-service nginx-backend
+     gcloud compute url-maps create web-map \
+     --default-service nginx-backend
 
-gcloud compute target-http-proxies create http-lb-proxy \
---url-map web-map
+     gcloud compute target-http-proxies create http-lb-proxy \
+     --url-map web-map
 
 #### 8- Creating a forwarding rule:
 
-gcloud compute forwarding-rules create http-content-rule \
---global \
---target-http-proxy http-lb-proxy \
---ports 80
+     gcloud compute forwarding-rules create http-content-rule \
+     --global \
+     --target-http-proxy http-lb-proxy \
+     --ports 80
 
-gcloud compute forwarding-rules list
+     gcloud compute forwarding-rules list
 
 
 #### After this gcloud compute forwarding-rules list and then open the ip addresses listed in the output of the above command 
